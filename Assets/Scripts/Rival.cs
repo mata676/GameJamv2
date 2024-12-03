@@ -15,25 +15,27 @@ public class Rival : MonoBehaviour
         direction.Normalize();
         Vector3 newPos = transform.position + direction * randomSpeed * Time.deltaTime;
         transform.position = newPos;
-
+        
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Player" && hp > 0)
+        Debug.Log($"Rival HP : {hp}");
+        if (collision.gameObject.tag == "Player" && hp > 0)
         {
             Vector3 pushback = transform.position - player.transform.position;
             pushback.Normalize();
             Rigidbody rivalRb = GetComponent<Rigidbody>();
-            rivalRb.AddForce(pushback * 15f, ForceMode.Impulse);
-            Debug.Log("PIERDOLNALEM!");
+            rivalRb.AddForce(pushback * 10f, ForceMode.Impulse);
+            hp -= 10;
         }
-        else if(hp < 0)
+        else if(hp <= 0)
         {
             minSpeed = 0;
             maxSpeed = 0;
-            Debug.Log("YOU DIED!");
+            Debug.Log("YOU WON! Rival died");
             player.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            Destroy(gameObject);
         }
     }
 }
