@@ -1,40 +1,61 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Rival : MonoBehaviour
 {
     public GameObject player;
     public int hp;
-    private float minSpeed = 2f;
-    private float maxSpeed = 5f;
 
+    private NavMeshAgent navAgent;
+    private float minSpeed = 5f; 
+    private float maxSpeed = 7f;
+    private bool notStunned = true;
+    private float duration = 1f;
+    private float timer = 0f;
+    void Start()
+    {
+        navAgent = GetComponent<NavMeshAgent>();
+        if (navAgent == null)
+        {
+            Debug.LogError("Rival: NavMeshAgent component missing!");
+            return;
+        }
+
+        navAgent.speed = Random.Range(minSpeed, maxSpeed); // Set random speed within bounds (consider adjusting based on NavMesh design)
+    }
 
     void Update()
     {
-        float randomSpeed = Random.Range(minSpeed, maxSpeed);
-        Vector3 direction = player.transform.position - transform.position;
-        direction.Normalize();
-        Vector3 newPos = transform.position + direction * randomSpeed * Time.deltaTime;
-        transform.position = newPos;
-        
+        Debug.Log(notStunned);
+        if (player != null && notStunned)
+        {
+            navAgent.SetDestination(player.transform.position);
+        }
+
+
+        if(notStunned == false)
+        {
+            timer += Time.deltaTime;
+            if(timer >= duration)
+            {
+                notStunned = true;
+                timer = 0f;
+
+            }
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log($"Rival HP : {hp}");
-        if (collision.gameObject.tag == "Player" && hp > 0)
+        if (collision.gameObject.tag == "Player" && hp > 0 && notStunned)
         {
-            Vector3 pushback = transform.position - player.transform.position;
-            pushback.Normalize();
-            Rigidbody rivalRb = GetComponent<Rigidbody>();
-            rivalRb.AddForce(pushback * 10f, ForceMode.Impulse);
-            hp -= 10;
+            notStunned = false;
+            // jest kolizja i ma wiecej niz 0 hp [zyje]
         }
-        else if(hp <= 0)
+        else if (hp <= 0)
         {
-            minSpeed = 0;
-            maxSpeed = 0;
             Debug.Log("YOU WON! Rival died");
-            player.GetComponent<Rigidbody>().velocity = Vector3.zero;
             Destroy(gameObject);
         }
     }
