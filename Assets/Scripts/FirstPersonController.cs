@@ -38,6 +38,10 @@ namespace StarterAssets
 		public int hp = 100;
 		GameObject rival;
 
+		[Header("MATA STUFF")]
+		public bool mouseLocked = false;
+		public bool movementLocked = false;
+
 		[Header("Player Grounded")]
 		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
 		public bool Grounded = true;
@@ -115,13 +119,16 @@ namespace StarterAssets
 
 		private void Update()
 		{
-			JumpAndGravity();
 			GroundedCheck();
+
+			if (movementLocked) return;
+			JumpAndGravity();
 			Move();
 		}
 
 		private void LateUpdate()
 		{
+			if (mouseLocked) return;
 			CameraRotation();
 		}
 
