@@ -43,6 +43,8 @@ public class Rival : MonoBehaviour
 
             }
         }
+
+        Debug.Log($"{hp}");
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -51,12 +53,16 @@ public class Rival : MonoBehaviour
         if (collision.gameObject.tag == "Player" && hp > 0 && notStunned)
         {
             notStunned = false;
-            // jest kolizja i ma wiecej niz 0 hp [zyje]
         }
         else if (hp <= 0)
         {
             Debug.Log("YOU WON! Rival died");
             Destroy(gameObject);
         }
+    }
+
+    public void RivalDamage(int points)
+    {
+        hp -= points;
     }
 }

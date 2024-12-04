@@ -276,7 +276,7 @@ namespace StarterAssets
 		}
         private void OnCollisionEnter(Collision collision)
         {
-			Debug.Log($"Player HP : {hp}");
+			//Debug.Log($"Player HP : {hp}");
 			if (collision.gameObject.tag == "Rival" && hp > 0)
 			{
 				hp -= 10;
